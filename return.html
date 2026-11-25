@@ -26,12 +26,15 @@
     link += '?error=' + encodeURIComponent((error || 'no_result').replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 60) || 'no_result');
     document.getElementById('title').textContent = 'Sign-in did not finish';
   }
-  var app = /Android/i.test(navigator.userAgent)
+  // Android Chrome in "desktop site" mode calls itself Linux, so a touch screen on Linux counts as Android.
+  var android = /Android/i.test(navigator.userAgent) || (/Linux/i.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
+  var app = android
     ? 'intent://' + link.slice('skillaimanetger://'.length) + '#Intent;scheme=skillaimanetger;package=org.skillaimanetger.app;end'
     : link;
   document.getElementById('open').href = app;
   history.replaceState(null, '', location.pathname);
-  location.replace(app);
+  // Let the page appear first, so there is something to tap if the browser will not open the app by itself.
+  setTimeout(function () { location.href = app; }, 700);
 })();
 </script>
 </body>
