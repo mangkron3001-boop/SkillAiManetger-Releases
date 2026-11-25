@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Return to SkillAiManetger</title>
+<style>
+  body { font: 18px/1.5 system-ui, sans-serif; max-width: 30rem; margin: 18vh auto; padding: 0 1.25rem; text-align: center; color: #1b1f2a; }
+  a.button { display: inline-block; margin-top: 1rem; padding: .8rem 1.4rem; border-radius: 999px; background: #0b3fc9; color: #fff; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1 id="title">Returning to SkillAiManetger</h1>
+<p id="text">If the app does not open by itself, tap the button.</p>
+<a class="button" id="open" href="#">Open SkillAiManetger</a>
+<script>
+(function () {
+  var query = new URLSearchParams(location.search);
+  var verifier = query.get('neon_auth_session_verifier') || '';
+  var error = query.get('error') || '';
+  var link = 'skillaimanetger://google';
+  if (/^[A-Za-z0-9._~-]{1,512}$/.test(verifier)) link += '?v=' + verifier;
+  else {
+    link += '?error=' + encodeURIComponent((error || 'no_result').replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 60) || 'no_result');
+    document.getElementById('title').textContent = 'Sign-in did not finish';
+  }
+  var app = /Android/i.test(navigator.userAgent)
+    ? 'intent://' + link.slice('skillaimanetger://'.length) + '#Intent;scheme=skillaimanetger;package=org.skillaimanetger.app;end'
+    : link;
+  document.getElementById('open').href = app;
+  history.replaceState(null, '', location.pathname);
+  location.replace(app);
+})();
+</script>
+</body>
+</html>
